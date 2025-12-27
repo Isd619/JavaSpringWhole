@@ -1,7 +1,6 @@
 package com.example.kafka.service;
 
 import com.example.kafka.model.OrderEvent;
-import com.example.kafka.store.OrderEventStore;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

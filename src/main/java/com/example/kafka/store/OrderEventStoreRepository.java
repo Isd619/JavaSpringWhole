@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Repository
-public interface OrderEventStore extends JpaRepository<OrderEvent, Long> {
+public interface OrderEventStoreRepository extends JpaRepository<OrderEvent, Long> {
 
     Page<OrderEvent> findAll(Pageable pageable);
 
