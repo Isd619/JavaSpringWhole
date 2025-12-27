@@ -2,7 +2,7 @@ package com.example.kafka.service;
 
 import com.example.kafka.enums.DeleteType;
 import com.example.kafka.model.OrderEvent;
-import com.example.kafka.store.OrderEventStore;
+import com.example.kafka.store.OrderEventStoreRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,18 +16,18 @@ import java.util.List;
 @Transactional
 public class OrderService {
 
-    private final OrderEventStore orderEventStore;
+    private final OrderEventStoreRepository orderEventStoreRepository;
 
-    public OrderService(OrderEventStore orderEventStore) {
-        this.orderEventStore = orderEventStore;
+    public OrderService(OrderEventStoreRepository orderEventStoreRepository) {
+        this.orderEventStoreRepository = orderEventStoreRepository;
     }
 
     public OrderEvent saveOrder(OrderEvent event) {
-        return orderEventStore.save(event);
+        return orderEventStoreRepository.save(event);
     }
 
     public List<OrderEvent> getAllOrders() {
-        return orderEventStore.findAll();
+        return orderEventStoreRepository.findAll();
     }
 
     public Page<OrderEvent> getOrders(int page, int size, String sortBy, String direction) {
@@ -37,7 +37,7 @@ public class OrderService {
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return orderEventStore.findAll(pageable);
+        return orderEventStoreRepository.findAll(pageable);
     }
 
     public int deleteOrders(int count, DeleteType type) {
@@ -49,8 +49,8 @@ public class OrderService {
         Pageable pageable = PageRequest.of(0, count);
 
         List<OrderEvent> orders = switch (type) {
-            case LATEST -> orderEventStore.findLatest(pageable);
-            case OLDEST -> orderEventStore.findOldest(pageable);
+            case LATEST -> orderEventStoreRepository.findLatest(pageable);
+            case OLDEST -> orderEventStoreRepository.findOldest(pageable);
         };
 
         if(orders .isEmpty()) {
@@ -61,7 +61,7 @@ public class OrderService {
                 .map(OrderEvent::getId)
                 .toList();
 
-        orderEventStore.deleteByIdIn(ids);
+        orderEventStoreRepository.deleteByIdIn(ids);
         return ids.size();
     }
 
